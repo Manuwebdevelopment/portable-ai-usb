@@ -54,13 +54,19 @@
 
 ## In Progress 🚧
 
-- [ ] **P0** Run populate_checksums.sh to populate SHA256 checksums (needs fast internet)
-- [ ] **P0** Initialize git repo and push to GitHub
+- [ ] **P0** Initialize git repo and push to GitHub ✅ DONE
 - [ ] **P1** Real-hardware testing (Mac mini Apple Silicon)
 - [ ] **P1** Real-hardware testing (Linux distros)
 - [ ] **P1** Windows launcher verification
 - [ ] AnythingLLM integration scripts (v1.5)
 - [ ] Comprehensive usage documentation
+
+## P0 Remaining
+
+- [ ] Run populate_checksums.sh to populate SHA256 checksums (needs fast internet)
+- [ ] Set up GitHub repo and push
+- [ ] Remove hardcoded macOS paths from config.sh (replaced with [WORKING_DIR] placeholders)
+- [ ] Test installer scripts on actual hardware
 
 ## Next Steps 🔜
 
