@@ -47,7 +47,7 @@ PORTABLE-AI-USB/
 ## 🚀 Setup (One-Time)
 
 1. Copy repo to USB drive
-2. Run `scripts/install/setup.sh`
+2. Run `scripts/install/install.sh`
 3. Download desired models
 4. Configure AnythingLLM
 5. Run `launcher/start-[platform].sh`
