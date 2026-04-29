@@ -1,0 +1,39 @@
+# Gitignore for Portable AI USB
+
+# Ollama and models
+models/
+ollama/
+anythingllm_data/
+log/*.log
+*.cache
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Generated files
+config/.env
+config/*.plist
+config/launcher-*.sh
+config/launcher-*.bat
+scripts/install/launcher-linux.sh
+scripts/install/launcher-windows.bat
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

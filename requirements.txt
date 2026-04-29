@@ -1,0 +1,14 @@
+# Portable AI USB — Dependencies
+
+# Web server framework
+flask>=3.0.0
+werkzeug>=3.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Markdown rendering (for API response processing)
+markdown>=3.5.0
+
+# File handling
+python-multipart>=0.0.6

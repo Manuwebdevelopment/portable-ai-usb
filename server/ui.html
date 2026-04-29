@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portable AI USB</title>
+    <link rel="stylesheet" href="ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="app-title"><i class="fas fa-robot"></i> Portable AI</h1>
+                <button class="new-chat-btn" id="newChatBtn" title="New Chat (Ctrl+K)">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="sidebar-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search conversations...">
+            </div>
+            <div class="session-list" id="sessionList"></div>
+            <div class="sidebar-footer">
+                <button id="themeToggle" class="btn-toggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="settingsBtn" class="btn-toggle" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <header class="chat-header">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="chat-info">
+                    <h2 id="chatTitle">New Conversation</h2>
+                    <span id="statusIndicator" class="status offline"><i class="fas fa-circle"></i> Offline</span>
+                </div>
+                <div class="chat-actions">
+                    <button id="exportBtn" title="Export" class="action-btn"><i class="fas fa-download"></i></button>
+                    <button id="deleteBtn" title="Delete conversation" class="action-btn"><i class="fas fa-trash"></i></button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-content">
+                        <i class="fas fa-robot welcome-icon"></i>
+                        <h2>Welcome to Portable AI USB</h2>
+                        <p>Send a message to start chatting</p>
+                        <div class="suggestion-chips">
+                            <button class="suggestion-chip" data-prompt="Explain quantum computing in simple terms">💡 Explain quantum computing</button>
+                            <button class="suggestion-chip" data-prompt="Help me write a Python script">📝 Write a Python script</button>
+                            <button class="suggestion-chip" data-prompt="Compare different ML frameworks">🧠 Compare ML frameworks</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <div class="chat-settings" id="chatSettings">
+                    <div class="setting-row">
+                        <label>Model:</label>
+                        <select id="modelSelect" class="model-select"></select>
+                    </div>
+                    <div class="setting-row">
+                        <label>Context:</label>
+                        <input type="range" id="contextSlider" min="1" max="50" value="10" class="context-slider">
+                        <span id="contextValue">10</span>
+                    </div>
+                    <div class="setting-row">
+                        <label><input type="checkbox" id="deepThinking"> Deep Thinking</label>
+                    </div>
+                </div>
+
+                <div class="image-preview" id="imagePreview"></div>
+
+                <div class="input-wrapper">
+                    <textarea id="messageInput" placeholder="Type your message... (Ctrl+Enter to send)" rows="1"></textarea>
+                    <div class="input-actions">
+                        <button id="imageUploadBtn" class="action-btn" title="Upload image"><i class="fas fa-image"></i></button>
+                        <input type="file" id="imageFile" accept="image/*" hidden>
+                        <button id="stopBtn" class="action-btn stop-btn hidden" title="Stop generation"><i class="fas fa-stop"></i></button>
+                        <button id="sendBtn" class="action-btn send-btn" title="Send (Ctrl+Enter)"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <div class="input-hint">
+                    Powered by Ollama • <code>Ctrl+Enter</code> to send • <code>Escape</code> to stop
+                </div>
+            </div>
+        </main>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel hidden" id="settingsPanel">
+            <div class="settings-header">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <button id="closeSettings" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <h4>General</h4>
+                    <div class="setting-item">
+                        <label for="settingsSystemPrompt">System Prompt</label>
+                        <textarea id="settingsSystemPrompt" placeholder="Enter system prompt..."></textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label for="settingsOllamaHost">Ollama Host</label>
+                        <input type="text" id="settingsOllamaHost" placeholder="http://localhost:11434">
+                    </div>
+                    <div class="setting-item">
+                        <label for="settingsMaxTokens">Max Tokens</label>
+                        <input type="number" id="settingsMaxTokens" min="100" max="8192" value="4096">
+                    </div>
+                    <div class="setting-item">
+                        <label for="settingsTemperature">Temperature</label>
+                        <input type="range" id="settingsTemperature" min="0" max="2" step="0.1" value="0.7">
+                        <span id="tempValue">0.7</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h4>Models</h4>
+                    <button id="refreshModels" class="btn-primary"><i class="fas fa-sync"></i> Refresh Model List</button>
+                    <div class="model-list" id="modelList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        let currentSession = null;
+        let sessions = [];
+        let isStreaming = false;
+        let abortController = null;
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let uploadedImageB64 = null;
+
+        const $ = id => document.getElementById(id);
+        const messagesContainer = $('messagesContainer');
+        const sessionListEl = $('sessionList');
+        const messageInput = $('messageInput');
+        const imageFile = $('imageFile');
+
+        // === Theme ===
+        function applyTheme(theme) {
+            currentTheme = theme;
+            document.body.dataset.theme = theme;
+            $('themeToggle').querySelector('i').className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', theme);
+        }
+
+        // === Health Check ===
+        async function checkHealth() {
+            try {
+                const res = await fetch('/api/health');
+                const data = await res.json();
+                const conn = data.ollama_connected;
+                $('statusIndicator').className = `status ${conn ? 'online' : 'offline'}`;
+                $('statusIndicator').innerHTML = `<i class="fas fa-circle"></i> ${conn ? 'Online' : 'Disconnected'}`;
+            } catch (e) {
+                $('statusIndicator').className = 'status offline';
+                $('statusIndicator').innerHTML = '<i class="fas fa-circle"></i> Offline';
+            }
+        }
+
+        // === Sessions ===
+        async function loadSessions() {
+            try {
+                const res = await fetch('/api/sessions');
+                sessions = await res.json();
+                renderSessions();
+            } catch(e) { /* offline */ }
+        }
+
+        function renderSessions() {
+            const q = $('searchInput').value.toLowerCase();
+            const filtered = sessions.filter(s => s.name.toLowerCase().includes(q));
+            sessionListEl.innerHTML = filtered.map(s => {
+                const active = currentSession && currentSession.id === s.id ? ' active' : '';
+                return `<div class="session-item${active}" data-id="${s.id}">
+                    <div class="session-info" onclick="window._ls.loadSession('${s.id}')">
+                        <i class="fas fa-message"></i>
+                        <span class="session-name">${esc(s.name)}</span>
+                    </div>
+                    <div class="session-actions">
+                        <button onclick="window._ls.renameSession('${s.id}')" title="Rename"><i class="fas fa-edit"></i></button>
+                        <button onclick="window._ls.deleteSession('${s.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('') || '<div class="no-sessions">No conversations yet</div>';
+        }
+
+        // Expose to global for inline onclicks
+        window._ls = {
+            async loadSession(id) {
+                try {
+                    const res = await fetch(`/api/session?id=${id}`);
+                    const sess = await res.json();
+                    currentSession = sess;
+                    $('chatTitle').textContent = sess.name;
+                    renderMessages(sess.messages || []);
+                    renderSessions();
+                    $('welcomeScreen').style.display = (sess.messages && sess.messages.length > 0) ? 'none' : 'flex';
+                } catch(e) { console.error(e); }
+            },
+            async deleteSession(id) {
+                if (!confirm('Delete this conversation?')) return;
+                await fetch(`/api/session?id=${id}`, { method: 'DELETE' });
+                await loadSessions();
+                if (currentSession && currentSession.id === id) {
+                    currentSession = null;
+                    await createNewSession();
+                }
+            },
+            async renameSession(id) {
+                const name = prompt('New name:');
+                if (!name) return;
+                fetch('/api/session/rename', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, name })
+                });
+                loadSessions();
+            }
+        };
+
+        async function createNewSession() {
+            try {
+                const res = await fetch('/api/new-conversation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: 'New Conversation' })
+                });
+                currentSession = await res.json();
+                await loadSessions();
+                messagesContainer.innerHTML = `<div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-content">
+                        <i class="fas fa-robot welcome-icon"></i>
+                        <h2>Welcome to Portable AI USB</h2>
+                        <p>Send a message to start chatting</p>
+                        <div class="suggestion-chips">
+                            <button class="suggestion-chip" data-prompt="Explain quantum computing in simple terms">💡 Explain quantum computing</button>
+                            <button class="suggestion-chip" data-prompt="Help me write a Python script">📝 Write a Python script</button>
+                            <button class="suggestion-chip" data-prompt="Compare different ML frameworks">🧠 Compare ML frameworks</button>
+                        </div>
+                    </div>
+                </div>`;
+            } catch(e) { console.error(e); }
+        }
+
+        function renderMessages(messages) {
+            const existing = document.querySelector('.msg-bubble-container');
+            if (existing) existing.remove();
+
+            const container = document.createElement('div');
+            container.className = 'msg-bubble-container';
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.role}`;
+                div.innerHTML = `<div class="message-content">${msg.role === 'user' ? esc(msg.content) : marked.parse(msg.content)}</div>`;
+                // Add copy buttons to code blocks
+                div.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                    const pre = block.parentNode;
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-code-btn';
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    let preWrap = pre.closest('div.message-content');
+                    if (preWrap) preWrap.appendChild(copyBtn);
+                });
+                container.appendChild(div);
+            });
+
+            if (messages.length > 0) messagesContainer.appendChild(container);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // === Settings ===
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const s = await res.json();
+                $('settingsSystemPrompt').value = s.system_prompt || '';
+                $('settingsOllamaHost').value = s.ollama_host || 'http://localhost:11434';
+                $('settingsMaxTokens').value = s.max_tokens || 4096;
+                $('settingsTemperature').value = s.temperature || 0.7;
+            } catch(e) { /* offline */ }
+        }
+
+        async function loadModelList() {
+            try {
+                const res = await fetch('/api/model/tags');
+                const data = await res.json();
+                const models = (data.models || []).map(m => m.name);
+                $('modelSelect').innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('');
+                $('modelList').innerHTML = models.map(m => `<div class="model-item">${m}</div>`).join('') || '<div class="no-models">No models</div>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function saveSettings() {
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system_prompt: $('settingsSystemPrompt').value,
+                    ollama_host: $('settingsOllamaHost').value,
+                    max_tokens: parseInt($('settingsMaxTokens').value),
+                    temperature: parseFloat($('settingsTemperature').value)
+                })
+            });
+            $('settingsPanel').classList.add('hidden');
+            checkHealth();
+        }
+
+        // === Send Message ===
+        async function sendMessage(content) {
+            if (!content.trim() || isStreaming) return;
+
+            // Hide welcome if visible
+            const ws = $('welcomeScreen');
+            if (ws) ws.style.display = 'none';
+
+            // Add user message to UI
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.innerHTML = `<div class="message-content">${esc(content)}</div>`;
+            messagesContainer.appendChild(userDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            $('imagePreview').innerHTML = '';
+            uploadedImageB64 = null;
+
+            // Build request
+            const settings = JSON.parse(localStorage.getItem(`session_${currentSession.id}_settings`) || '{}');
+            const reqData = {
+                session_id: currentSession.id,
+                message: content.trim(),
+                model: $('modelSelect').value,
+                temperature: parseFloat($('settingsTemperature').value) || 0.7,
+                context_window: parseInt($('contextSlider').value),
+                deep_thinking: $('deepThinking').checked,
+                system_prompt: $('settingsSystemPrompt').value,
+                stream: true
+            };
+            if (uploadedImageB64) reqData.image = uploadedImageB64;
+
+            // Add assistant placeholder
+            const asstDiv = document.createElement('div');
+            asstDiv.className = 'message assistant';
+            asstDiv.innerHTML = '<div class="message-content"><span class="typing-indicator"><span>.</span><span>.</span><span>.</span></span></div>';
+            messagesContainer.appendChild(asstDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            const msgContentEl = asstDiv.querySelector('.message-content');
+            let fullText = '';
+
+            try {
+                isStreaming = true;
+                abortController = new AbortController();
+                $('stopBtn').classList.remove('hidden');
+                $('sendBtn').classList.add('hidden');
+
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reqData),
+                    signal: abortController.signal
+                });
+
+                if (!res.ok) throw new Error(await res.text());
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const text = decoder.decode(value);
+                    const lines = text.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const d = line.slice(6);
+                            if (d === '[DONE]') continue;
+                            try {
+                                const chunk = JSON.parse(d);
+                                if (typeof chunk === 'string') fullText += chunk;
+                                else if (chunk && typeof chunk === 'object') fullText += chunk.content || chunk.text || chunk.delta || '';
+                            } catch(e) { /* skip */ }
+                        }
+                    }
+
+                    msgContentEl.innerHTML = marked.parse(fullText);
+                    msgContentEl.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                        const pre = block.parentNode;
+                        pre.querySelector('.copy-code-btn')?.remove();
+                        const copyBtn = document.createElement('button');
+                        copyBtn.className = 'copy-code-btn';
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                        copyBtn.onclick = () => navigator.clipboard.writeText(block.textContent);
+                        pre.style.position = 'relative';
+                        const close = pre.querySelector('pre');
+                        if (close) close.appendChild(copyBtn);
+                        else pre.appendChild(copyBtn);
+                    });
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+
+            } catch(err) {
+                if (err.name === 'AbortError') {
+                    msgContentEl.innerHTML += '<br><em>[Stopped]</em>';
+                } else {
+                    msgContentEl.innerHTML = `<span class="error">❌ ${esc(err.message)}</span>`;
+                }
+            }
+
+            isStreaming = false;
+            $('stopBtn').classList.add('hidden');
+            $('sendBtn').classList.remove('hidden');
+        }
+
+        // === Images ===
+        function handleImageUpload(file) {
+            if (!file.type.startsWith('image/')) { alert('Image files only'); return; }
+            const reader = new FileReader();
+            reader.onload = e => {
+                uploadedImageB64 = e.target.result;
+                $('imagePreview').innerHTML = `<div class="preview-image"><img src="${uploadedImageB64}"><button class="remove-image" onclick="clearImage()">×</button></div>`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            uploadedImageB64 = null;
+            $('imagePreview').innerHTML = '';
+        }
+
+        // === Export ===
+        async function exportSession() {
+            if (!currentSession) return;
+            const res = await fetch(`/api/session?id=${currentSession.id}`);
+            const sess = await res.json();
+            let md = `# ${sess.name}\n\n`;
+            sess.messages.forEach(m => { md += `## ${m.role === 'user' ? 'You' : 'Assistant'}\n${m.content}\n\n`; });
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = (sess.name || 'chat').replace(/\s+/g, '_') + '.md'; a.click();
+        }
+
+        // === Helpers ===
+        function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+        // === Events ===
+        $('newChatBtn').onclick = createNewSession;
+        $('themeToggle').onclick = () => applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        $('settingsBtn').onclick = () => $('settingsPanel').classList.toggle('hidden');
+        $('closeSettings').onclick = () => $('settingsPanel').classList.add('hidden');
+        $('saveSettings').onclick = saveSettings;
+        $('refreshModels').onclick = loadModelList;
+        $('contextSlider').oninput = () => $('contextValue').textContent = $('contextSlider').value;
+        $('settingsTemperature').oninput = () => $('tempValue').textContent = $('settingsTemperature').value;
+        $('imageUploadBtn').onclick = () => imageFile.click();
+        imageFile.onchange = e => { if (e.target.files[0]) handleImageUpload(e.target.files[0]); };
+        $('stopBtn').onclick = () => { if (abortController) abortController.abort(); };
+        $('sidebarToggle').onclick = () => $('sidebar').classList.toggle('mobile-open');
+        $('exportBtn').onclick = exportSession;
+        $('deleteBtn').onclick = () => { if (currentSession) window._ls.deleteSession(currentSession.id); };
+        $('searchInput').oninput = renderSessions;
+
+        $('sendBtn').onclick = () => {
+            sendMessage(messageInput.value);
+        };
+
+        messageInput.onkeydown = e => {
+            if (e.ctrlKey && e.key === 'Enter') { sendMessage(messageInput.value); e.preventDefault(); }
+            if (e.key === 'Escape' && isStreaming) { if (abortController) abortController.abort(); }
+        };
+
+        messageInput.oninput = () => {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 200) + 'px';
+        };
+
+        document.querySelectorAll('.suggestion-chip').forEach(chip => {
+            chip.onclick = () => { messageInput.value = chip.dataset.prompt; sendMessage(chip.dataset.prompt); };
+        });
+
+        // === Init ===
+        applyTheme(currentTheme);
+        loadSessions();
+        loadSettings();
+        checkHealth();
+        loadModelList();
+        createNewSession();
+    })();
+    </script>
+</body>
+</html>
