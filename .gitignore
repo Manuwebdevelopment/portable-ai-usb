@@ -19,8 +19,6 @@ config/.env
 config/*.plist
 config/launcher-*.sh
 config/launcher-*.bat
-scripts/install/launcher-linux.sh
-scripts/install/launcher-windows.bat
 
 # IDE files
 .vscode/

@@ -1,97 +1,126 @@
 # 🚀 Portable AI USB
 
-A local AI system that runs 100% from a USB drive, works on any computer, offline after setup.
+A local AI system that runs from a USB stick or portable drive. Download models once, carry them anywhere, run on any computer.
 
-## 🎯 Core Features
+## What It Does
 
-- ✅ **100% Portable** - Everything runs from USB
-- ✅ **Offline After Setup** - No internet needed after initial install
-- ✅ **Multi-Platform** - Windows, macOS, Linux
-- ✅ **Dynamic Model Selection** - Auto-selects models based on hardware
-- ✅ **Multi-Agent Orchestration** - Spawn specialized agents per task
-- ✅ **Tool Integration** - Web search, file access, PDF analysis, image vision
-- ✅ **Message Routing** - Send outputs to BlueBubbles, Telegram, Discord
-- ✅ **Automated Workflows** - Cron jobs for scheduled tasks
-- ✅ **Memory System** - Daily notes + long-term curated memory
-- ✅ **Voice Capabilities** - TTS for stories, summaries, notifications
+- **Ollama** — local LLM engine (runs from USB, no cloud)
+- **Model library** — `config/models.json` with 9 pre-configured models (4B to 70B+)
+- **Flask web server** — browser-based chat UI with conversation history, multimodal input, and streaming
+- **Cross-platform** — macOS, Linux, Windows launchers
+- **Hardware detection** — auto-detects CPU/RAM/gpu and suggests the right model size
+- **Offline** — works fully offline after models are downloaded
 
-## 📋 What's Different from Portable-AI-USB
-
-| Feature | Portable-AI-USB | This Project |
-|---------|------------------|---------------|
-| Portability | USB drive | USB drive + Workspace sync |
-| Models | 1 per session | Dynamic switching |
-| Agents | Single chat | Multi-agent orchestration |
-| Tools | None | Full tool integration |
-| Memory | Local chats | Curated memory system |
-| Automation | Manual | Cron jobs |
-| Message Routing | None | Channel plugins |
-| Hardware Access | Limited | Full device control |
-
-## 🛠️ Architecture
+## Project Structure
 
 ```
 PORTABLE-AI-USB/
+├── server/
+│   ├── web_server.py    Flask chat server (port 8080)
+│   ├── config.py        Server configuration
+│   └── ui.html          Chat interface
+├── config/
+│   └── models.json      Model manifest (names, URLs, sizes)
 ├── scripts/
-│   ├── detect/           # Hardware detection
-│   ├── install/          # Setup scripts
-│   └── launcher/         # Platform launchers
-├── models/               # Model files (.gguf)
-├── config/               # Generated configs
-├── ollama/               # AI engine
-├── anythingllm/         # Chat interface
-├── anythingllm_data/    # User data (portable)
-└── log/                  # Installation logs
+│   ├── detect/
+│   │   ├── hardware.sh  CPU / RAM / GPU detection
+│   │   └── model.sh     Hardware-aware model selection
+│   ├── install/
+│   │   ├── install.sh   Ubuntu/Debian installer
+│   │   ├── install-arch.sh   Arch Linux installer
+│   │   ├── install-fedora.sh Fedora installer
+│   │   ├── launcher-mac.command   macOS launcher (double-click)
+│   │   ├── launcher-windows.bat   Windows launcher (double-click)
+│   │   └── config.sh    Creates service/unit configs
+│   └── manage/
+│       ├── models.sh    Model management utilities
+│       └── populate_checksums.sh  Fills SHA256 checksums
+├── requirements.txt     Python dependencies (Flask)
+├── .gitignore
+└── TO-DO.md
 ```
 
-## 🚀 Setup (One-Time)
+## Quick Start
 
-1. Copy repo to USB drive
-2. Run `scripts/install/install.sh`
-3. Download desired models
-4. Configure AnythingLLM
-5. Run `launcher/start-[platform].sh`
+### 1. Install Ollama (one-time, per computer)
 
-## 📁 Usage
-
-After setup, use any platform:
-- **macOS**: `launcher/start-mac.command`
-- **Windows**: `launcher/start-windows.bat`
-- **Linux**: `launcher/start-linux.sh`
-
-## 🧠 Memory System
-
-- `memory/YYYY-MM-DD.md` - Daily logs (written when needed)
-- `memory/PROJECT.md` - Project context
-
-## 🔄 Multi-Project Support
-
-Create new project folders:
-- `PORTABLE-AI-USB/`
-- `ANOTHER-PROJECT/`
-- Each gets its own cron job, session, workspace
-
-## 📖 Documentation
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Design decisions
-- [INSTALLATION.md](INSTALLATION.md) - Setup guide
-- [TO-DO.md](TO-DO.md) - Current tasks
-
-## 🔧 Development
-
-Run from your local workspace:
+**macOS:**
 ```bash
-# Continue project
-openclaw status
-# or spawn new session
-sessions_spawn(task="Continue Portable AI USB")
+brew install ollama
+ollama serve
 ```
 
-## 📚 Credits
+**Ubuntu/Debian:**
+```bash
+./scripts/install/install.sh
+```
 
-- Inspired by: techjarves/Portable-AI-USB  
-Built with: Hermes Agent on macOS
+**Arch Linux:**
+```bash
+./scripts/install/install-arch.sh
+```
 
-## 📄 License
+**Fedora:**
+```bash
+./scripts/install/install-fedora.sh
+```
 
-MIT License
+### 2. Pull a Model
+
+```bash
+ollama pull qwen2.5
+# or
+ollama pull llama3.2:1b   # for low-end PCs
+```
+
+Models are listed in `config/models.json`. See below for all options.
+
+### 3. Launch
+
+**macOS:** Double-click `scripts/install/launcher-mac.command`  
+**Windows:** Double-click `scripts/install/launcher-windows.bat`  
+**Linux:** 
+```bash
+ollama serve          # terminal 1
+python3 -m server.web_server   # terminal 2
+```
+
+Then open `http://localhost:8080` in your browser.
+
+## Models
+
+| Model | Size | Min RAM | When to use |
+|-------|------|---------|-------------|
+| `qwen2.5` | ~8GB | 8GB | General purpose |
+| `llama3.2:1b` | ~2GB | 4GB | Low-end PC |
+| `llama3.2:3b` | ~4GB | 6GB | Balanced |
+| `llama3.1:8b` | ~8GB | 8GB | Strongest small |
+| `qwen3:8b` | ~8GB | 8GB | Good multilingual |
+| `mistral:7b` | ~7GB | 8GB | Code + text |
+| `llama3:70b` | ~40GB | 32GB | High-end |
+| `codegemma:7b` | ~7GB | 8GB | Code-only |
+| `tinyllama:1.1b` | ~2GB | 4GB | Ultra-low-end |
+
+Full list and download URLs: `config/models.json`
+
+## Configuration
+
+Edit `server/.env.example` and rename to `server/.env` to customize:
+
+```
+WEB_PORT=8080         # Web server port
+OLLAMA_HOST=http://localhost:11434   # Ollama endpoint
+DEFAULT_MODEL=qwen2.5         # Initial model
+MAX_TOKENS=4096       # Max response length
+```
+
+## Troubleshooting
+
+**"Ollama not running"** — Start it first: `ollama serve`  
+**Port already in use** — Change port in `.env` or kill the other process  
+**"Out of memory"** — Pick a smaller model from the table above  
+**Models not downloading** — Check `config/models.json` for available models  
+
+## License
+
+MIT

@@ -7,12 +7,21 @@ set -euo pipefail
 # ─── Defaults ───────────────────────────────────────────
 PORT=11434
 MODEL="qwen2.5"
-LOG_DIR="$HOME/.portable-ai-usb/logs"
+# Use USB-relative paths for true portability
+USB_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_DIR="$USB_ROOT/logs"
 LOG_FILE="$LOG_DIR/launcher_$(date +%Y%m%d_%H%M%S).log"
-MODELS_DIR="$HOME/.portable-ai-usb/models"
-OLLAMA_HOME="$HOME/.portable-ai-usb/ollama"
+MODELS_DIR="$USB_ROOT/models"
+OLLAMA_HOME="$USB_ROOT/ollama"
 export OLLAMA_MODELS="$MODELS_DIR"
 export OLLAMA_HOST="127.0.0.1:$PORT"
+
+# Use local ollama from USB, or system ollama as fallback
+OLLAMA_BIN="$OLLAMA_DIR/ollama"
+if [[ ! -f "$OLLAMA_BIN" ]]; then
+    echo "ℹ️  USB ollama not found — using system ollama"
+    OLLAMA_BIN="$(command -v ollama)"
+fi
 
 mkdir -p "$LOG_DIR" "$MODELS_DIR" "$OLLAMA_HOME"
 
@@ -60,9 +69,9 @@ if ollama list &>/dev/null 2>&1; then
     exit 0
 fi
 
-# ─── Start Ollama ─────────────────────────────────────━━
+# ─── Start Ollama ───────────────────────────────────━━
 echo "🚀 Starting Portable AI USB..."
-ollama serve --port $PORT &
+"$OLLAMA_BIN" serve --port $PORT &
 OLLAMA_PID=$!
 
 # Wait for Ollama to become ready

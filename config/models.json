@@ -18,8 +18,8 @@
         "ollama": "ollama pull llama3.2:1b-instruct",
         "huggingface_primary": "https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Llama-3.2-1B-Instruct-GGUF/resolve/main/llama-3.2-1b-instruct.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Lightweight tasks, web search, quick responses",
       "performance": "Very fast, basic reasoning",
@@ -39,8 +39,8 @@
         "ollama": "ollama pull llama3.2:3b-instruct",
         "huggingface_primary": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Llama-3.2-3B-Instruct-GGUF/resolve/main/llama-3.2-3b-instruct.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "General purpose, coding assistance",
       "performance": "Fast, good reasoning",
@@ -60,8 +60,8 @@
         "ollama": "ollama pull llama3.1:8b-instruct",
         "huggingface_primary": "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/meta-llama-3.1-8b-instruct.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Best all-rounder, coding, reasoning",
       "performance": "Fast on 8GB+, balanced quality/speed",
@@ -81,8 +81,8 @@
         "ollama": "ollama pull mistral:7b",
         "huggingface_primary": "https://huggingface.co/bartowski/Mistral-7B-Instruct-v0.3-GGUF/resolve/main/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.3-GGUF/resolve/main/mistral-7b-instruct-v0.3.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "General purpose, good alternative to Llama",
       "performance": "Fast, strong for 7B class",
@@ -102,8 +102,8 @@
         "ollama": "ollama pull codegemma:7b",
         "huggingface_primary": "https://huggingface.co/bartowski/codegemma-7b-it-GGUF/resolve/main/codegemma-7b-it-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/codegemma-7B-it-GGUF/resolve/main/codegemma-7b-it.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Code generation, programming tasks",
       "performance": "Fast, code-optimized",
@@ -123,8 +123,8 @@
         "ollama": "ollama pull llama3:70b",
         "huggingface_primary": "https://huggingface.co/bartowski/Llama-3.3-70B-Instruct-GGUF/resolve/main/Llama-3.3-70B-Instruct-Q4_0_8_8.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Llama-3.3-70B-Instruct-GGUF/resolve/main/llama-3.3-70b-instruct.Q4_0_8_8.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Maximum quality, complex reasoning, large context",
       "performance": "Slow on CPU, best quality 70B class",
@@ -144,8 +144,8 @@
         "ollama": "ollama pull tinyllama:1.1b",
         "huggingface_primary": "https://huggingface.co/bartowski/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/TinyLlama-1.1B-Chat-v1.0-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Minimal RAM, basic chat, fallback option",
       "performance": "Very fast, limited capability",
@@ -165,8 +165,8 @@
         "ollama": "ollama pull qwen2.5:7b-instruct",
         "huggingface_primary": "https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf",
         "huggingface_mirror": "https://huggingface.co/TheBloke/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct.Q4_K_M.gguf",
-        "checksum": "",
-        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched."
+        "checksum": "pending-computation",
+        "checksum_notes": "bARTOWSKI repos are gated - require license acceptance at https://huggingface.co/bartoshi before checksums can be fetched. Run populate_checksums.sh once license is granted."
       },
       "use_case": "Multi-lingual, strong generalist",
       "performance": "Fast, strong reasoning for size",

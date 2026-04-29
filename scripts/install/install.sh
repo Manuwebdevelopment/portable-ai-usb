@@ -10,8 +10,9 @@ INSTALL_ONLY=true
 PORT=11434
 MODEL="qwen2.5"
 LOG_FILE="/tmp/ollama-install.log"
-CONFIG_DIR="/usr/share/ollama/config"
-OLLAMA_DATA_DIR="/usr/share/ollama/data"
+# USB portable path set by caller
+CONFIG_DIR="$USB_ROOT/config"
+OLLAMA_DATA_DIR="$USB_ROOT/data"
 
 # Colors for output
 RED='\033[0;31m'
